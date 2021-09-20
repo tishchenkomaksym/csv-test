@@ -1,0 +1,8 @@
+FLUSH PRIVILEGES;
+
+DROP USER IF EXISTS maks;
+
+CREATE USER maks IDENTIFIED WITH mysql_native_password BY 'BGmUd3iPvDf6925';
+GRANT ALL PRIVILEGES ON `csv_test`.* TO maks;
+
+
