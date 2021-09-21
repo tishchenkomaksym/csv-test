@@ -41,5 +41,16 @@ class ImportCommand extends Command
     public function handle()
     {
         $this->csvService->importFile();
+        foreach ($this->csvService->insertFailed as $error){
+            if(is_array($error)){
+                foreach ( $error as $item) {
+                    $this->comment($item);
+                }
+            }else {
+                $this->comment($error);
+            }
+
+        }
+
     }
 }
