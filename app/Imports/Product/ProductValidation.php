@@ -35,7 +35,7 @@ class ProductValidation
 
         foreach ($rows as $key => $row) {
             $price = $this->checkUsdField($key, $row, $gbpToUsdRate);
-
+            $row['price'] = $price;
             if ($row['discontinued'] == 'yes'){
                 $row['discontinued'] = (new Carbon())->format('Y-m-d h:i:s');
                 $filteredRows[] =  $row;
