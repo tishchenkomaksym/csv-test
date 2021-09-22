@@ -15,11 +15,11 @@ class ExchangeRateService
         $res = '';
         $url = "https://freecurrencyapi.net/api/v1/rates?base_currency=GBP";
         $response = Http::get($url);
-        if(!isset($response->body()->data)){
+        $rates = json_decode($response->body());
+        if(!isset($rates->data)){
             $res = '1.36';
         }else {
-            $rates = json_decode($response->body())->data;
-            foreach ( $rates as $rate) {
+            foreach ($rates->data as $rate) {
                 $res = $rate->USD;
             }
         }
