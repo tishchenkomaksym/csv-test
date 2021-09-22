@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->dateTime('added_at')->nullable();
             $table->dateTime('discontinued_at')->nullable();
             $table->decimal('price', 7, 2)->unsigned()->nullable();
-            $table->unsignedSmallInteger('stoke_level')->default(0);
+            $table->unsignedSmallInteger('stock')->default(0);
             $table->timestamp('updated_at')->useCurrent();
         });
     }

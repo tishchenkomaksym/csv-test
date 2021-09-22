@@ -20,7 +20,7 @@ class Product extends Model
         'added_at',
         'discontinued_at',
         'price',
-        'stoke_level',
+        'stock',
         'updated_at'
     ];
 

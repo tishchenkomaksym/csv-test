@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Imports\Product\ProductsImport;
 use App\Services\Import\ImportCsvService;
 use Illuminate\Console\Command;
 
@@ -12,7 +13,7 @@ class ImportCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'import:csv';
+    protected $signature = 'import:csv {test?} {--path=stock.csv}';
 
     /**
      * The console command description.
@@ -40,8 +41,11 @@ class ImportCommand extends Command
      */
     public function handle()
     {
-        $this->csvService->importFile();
-        foreach ($this->csvService->insertFailed as $error){
+//        $start = now();
+        $this->csvService->importFile($this->option('path'), $this->argument('test') ?? '');
+//        $time = $start->diffInSeconds(now());
+//        $this->info('Execution time ' . $time);
+        foreach (ProductsImport::$insertFailed as $error){
             if(is_array($error)){
                 foreach ( $error as $item) {
                     $this->comment($item);
@@ -51,6 +55,5 @@ class ImportCommand extends Command
             }
 
         }
-
     }
 }

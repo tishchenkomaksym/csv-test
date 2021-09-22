@@ -14,6 +14,7 @@ P0012,TV,HD ready,45,50.55,
 P0013,Cd Player,Beats MP3,34,27.99,
 P0014,VCR,VHS rules,3,23,yes
 P0015,Bluray Player,Excellent picture,32,$4.33,
+P0030,Bluray Player,Excellent picture,32,$5.36,
 P0015,Bluray Player,Excellent picture,32,4.33,
 P0016,24” Monitor,Visual candy,3,45,
 P0017,CPU,Processing power, ideal for multimedia,4,4.22,
@@ -27,4 +28,5 @@ P0024,PS3,Just don't go online,22,24.33,yes
 P0025,TV,Great for television,21,40,
 P0026,Cd Player,A personal favourite,0,34.55,
 P0027,VCR,Plays videos,34,1200.03,yes
+P0029,VCR,Plays videos,34,999.03
 P0028,Bluray Player,Plays bluray's,32,1100.04,yes
