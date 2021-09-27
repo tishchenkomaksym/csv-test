@@ -19,7 +19,7 @@ class ProductValidation
      *
      * @return array
      */
-    public function importRules(array $rows):array
+    public function importRules(array $rows): array
     {
         $filteredRows = [];
         $exchangeRateService = new ExchangeRateService();
@@ -45,9 +45,9 @@ class ProductValidation
             if ($row['discontinued'] == 'yes'){
                 $row['discontinued'] = (new Carbon())->format('Y-m-d h:i:s');
                 $filteredRows[] =  $row;
-            }elseif ($price >= 5 && $row['stock'] >= 10 && $price < 1000){
+            } elseif ($price >= 5 && $row['stock'] >= 10 && $price <= 1000){
                 $filteredRows[] =  $row;
-            }else {
+            } else {
                 $this->insertedFail[] = 'The ' . $key . ' did not match import rules';
             }
         }
@@ -63,7 +63,7 @@ class ProductValidation
      *
      * @return string
      */
-    private function checkUsdField($key, $row, $gbpToUsdRate):string
+    private function checkUsdField($key, $row, $gbpToUsdRate): string
     {
         if (!in_array($key, $this->usdRate)){
             $price = ($row['price'] * floatval($gbpToUsdRate));
@@ -79,7 +79,7 @@ class ProductValidation
      *
      * @return array
      */
-    public function checkCorrectFields(array $rows):array
+    public function checkCorrectFields(array $rows): array
     {
         if (empty($this->keys)){
             $rowNames = array_shift($rows);
@@ -113,9 +113,6 @@ class ProductValidation
         foreach ( $keys as $i => $key) {
             if(preg_match('/price\s\w+\s\w+/i', $key)){
                 $exploded = explode(' ', $key);
-                /**
-                 * TODO May be handle currency ticker
-                 */
                 ProductsImport::$currency = end($exploded);
                 $keys[$i] = 'price';
             }
@@ -132,7 +129,7 @@ class ProductValidation
     /**
      * @param array $rows
      */
-    public function validate(array &$rows):void
+    public function validate(array &$rows): void
     {
         /**
          * check if price in dollars $

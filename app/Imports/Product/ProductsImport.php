@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
-class ProductsImport implements ToCollection, WithCustomCsvSettings, WithBatchInserts, WithChunkReading, SkipsEmptyRows
+class ProductsImport implements ToCollection, WithBatchInserts, WithChunkReading, SkipsEmptyRows
 {
     use Importable;
 
@@ -37,7 +37,7 @@ class ProductsImport implements ToCollection, WithCustomCsvSettings, WithBatchIn
         $this->productValidation = new ProductValidation();
     }
 
-    public function collection(Collection $rows):void
+    public function collection(Collection $rows): void
     {
         $rows = $rows->toArray();
         $rows = $this->productValidation->checkCorrectFields($rows);
@@ -45,32 +45,24 @@ class ProductsImport implements ToCollection, WithCustomCsvSettings, WithBatchIn
         $this->productValidation->validate($rows);
 
         $rows = $this->productValidation->importRules($rows);
-        if ($this->test != 'test') {
-            foreach ($rows as $row) {
-                Product::create([
-                    'code' => $row['code'],
-                    'name' => $row['name'],
-                    'description' => $row['description'],
-                    'stock' => $row['stock'],
-                    'price' => $row['price'],
-                    'added_at' => (new Carbon())->toDateTime(),
-                    'discontinued_at' => $row['discontinued']
-                ]);
-            }
+        if ($this->test === 'test') {
+            return;
+        }
+        foreach ($rows as $row) {
+            Product::create([
+                'code' => $row['code'],
+                'name' => $row['name'],
+                'description' => $row['description'],
+                'stock' => $row['stock'],
+                'price' => $row['price'],
+                'added_at' => (new Carbon())->toDateTime(),
+                'discontinued_at' => $row['discontinued']
+            ]);
         }
 
+
     }
 
-
-    /**
-     * @return array[]
-     */
-    public function getCsvSettings(): array
-    {
-        return [
-            'input_encoding' => 'ISO-8859-1'
-        ];
-    }
 
     /**
      * batch setting for optimization

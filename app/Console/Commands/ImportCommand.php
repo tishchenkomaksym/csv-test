@@ -35,6 +35,7 @@ class ImportCommand extends Command
     public function __construct(ImportCsvService $csvService)
     {
         parent::__construct();
+
         $this->csvService = $csvService;
     }
 
@@ -48,11 +49,11 @@ class ImportCommand extends Command
         $this->csvService->importFile($this->argument('path'), $this->argument('test') ?? '');
 
         foreach ($this->csvService->insertedFail as $error){
-            if(is_array($error)){
+            if (is_array($error)) {
                 foreach ( $error as $item) {
                     $this->comment($item);
                 }
-            }else {
+            } else {
                 $this->comment($error);
             }
 
