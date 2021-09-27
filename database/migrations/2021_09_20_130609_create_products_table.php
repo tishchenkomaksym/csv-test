@@ -14,13 +14,15 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->integer('intProductDataId')->unsigned()->autoIncrement();
-            $table->string('strProductName', 50);
-            $table->string('strProductDesc', 255);
-            $table->string('strProductCode', 10);
-            $table->dateTime('dtmAdded')->default(null);
-            $table->dateTime('dtmDiscontinued')->default(null);
-            $table->timestamp('stmTimestamp')->useCurrent();
+            $table->integer('id')->unsigned()->autoIncrement();
+            $table->string('name', 50);
+            $table->string('description', 255);
+            $table->string('code', 10)->unique();
+            $table->dateTime('added_at')->nullable();
+            $table->dateTime('discontinued_at')->nullable();
+            $table->decimal('price', 7, 2)->unsigned()->nullable();
+            $table->unsignedSmallInteger('stock')->default(0);
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 
