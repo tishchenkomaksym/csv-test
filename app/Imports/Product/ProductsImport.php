@@ -3,25 +3,34 @@
 namespace App\Imports\Product;
 
 use App\Models\Product;
-use App\Services\Import\ExchangeRateService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
-class ProductsImport implements ToCollection, WithCustomCsvSettings, WithBatchInserts, WithChunkReading
+class ProductsImport implements ToCollection, WithCustomCsvSettings, WithBatchInserts, WithChunkReading, SkipsEmptyRows
 {
     use Importable;
 
+    /**
+     * @var string
+     */
     public static string $currency;
+
+    /**
+     * @var string
+     */
     public string $test;
 
-    public static array $insertFailed = [];
-    private ProductValidation $productValidation;
+
+    /**
+     * @var ProductValidation
+     */
+    public ProductValidation $productValidation;
 
     public function __construct()
     {
@@ -36,7 +45,7 @@ class ProductsImport implements ToCollection, WithCustomCsvSettings, WithBatchIn
         $this->productValidation->validate($rows);
 
         $rows = $this->productValidation->importRules($rows);
-        if ($this->test != 'test'){
+        if ($this->test != 'test') {
             foreach ($rows as $row) {
                 Product::create([
                     'code' => $row['code'],
@@ -53,6 +62,9 @@ class ProductsImport implements ToCollection, WithCustomCsvSettings, WithBatchIn
     }
 
 
+    /**
+     * @return array[]
+     */
     public function getCsvSettings(): array
     {
         return [

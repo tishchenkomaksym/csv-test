@@ -8,6 +8,10 @@ use Maatwebsite\Excel\Excel;
 class ImportCsvService
 {
     /**
+     * @var array
+     */
+    public array $insertedFail = [];
+    /**
      * @param $path
      * @param null $test
      *
@@ -19,6 +23,7 @@ class ImportCsvService
         $productImport->test = $test;
         try {
             $productImport->import(base_path($path), null, Excel::CSV);
+            $this->insertedFail = $productImport->productValidation->insertedFail;
         }catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $exception) {
             return 'Wrong extension, you need csv extension';
         }catch (\Error $error) {

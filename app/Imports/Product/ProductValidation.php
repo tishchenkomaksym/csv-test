@@ -5,13 +5,14 @@ namespace App\Imports\Product;
 use App\Services\Import\ExchangeRateService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Matrix\Exception;
+
 
 class ProductValidation
 {
     private array $usdRate = [];
     private array $keys = [];
     public $gbpToUsdRate;
+    public array $insertedFail = [];
 
     /**
      * @param array $rows
@@ -34,6 +35,11 @@ class ProductValidation
 
 
         foreach ($rows as $key => $row) {
+
+            foreach ($row as $i => $item) {
+                str_replace("\r", "\n", str_replace("\r\n", "\n", $row[$i]));
+            }
+
             $price = $this->checkUsdField($key, $row, $gbpToUsdRate);
             $row['price'] = $price;
             if ($row['discontinued'] == 'yes'){
@@ -42,7 +48,7 @@ class ProductValidation
             }elseif ($price >= 5 && $row['stock'] >= 10 && $price < 1000){
                 $filteredRows[] =  $row;
             }else {
-                ProductsImport::$insertFailed[] = 'The ' . $key . ' did not match import rules';
+                $this->insertedFail[] = 'The ' . $key . ' did not match import rules';
             }
         }
 
@@ -132,7 +138,7 @@ class ProductValidation
          * check if price in dollars $
          */
         foreach ( $rows as $key => $row ) {
-            if (is_string($row['price']) && $row['price'][0] === '$'){
+            if (is_string($row['price']) && $row['price'][0] === '$') {
                 $rows[$key]['price'] = substr($row['price'], 1);
                 $this->usdRate[] = $key;
             }
@@ -145,15 +151,16 @@ class ProductValidation
             '*.stock' => ['nullable','numeric'],
             '*.price' => ['numeric'],
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             foreach ($validator->errors()->messages() as $key => $error){
                 $keyRemove = explode('.', $key)[0];
                 /**
                  * collect not inserted row for showing in console
                  */
-                ProductsImport::$insertFailed[] = $error;
+                $this->insertedFail[] = $error;
                 unset($rows[$keyRemove]);
             }
         }
+
     }
 }

@@ -13,7 +13,7 @@ class ImportCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'import:csv {test?} {--path=stock.csv}';
+    protected $signature = 'import:csv {path} {test?}';
 
     /**
      * The console command description.
@@ -21,6 +21,10 @@ class ImportCommand extends Command
      * @var string
      */
     protected $description = 'Parse and import csv file to db';
+
+    /**
+     * @var ImportCsvService
+     */
     private ImportCsvService $csvService;
 
     /**
@@ -41,11 +45,9 @@ class ImportCommand extends Command
      */
     public function handle()
     {
-//        $start = now();
-        $this->csvService->importFile($this->option('path'), $this->argument('test') ?? '');
-//        $time = $start->diffInSeconds(now());
-//        $this->info('Execution time ' . $time);
-        foreach (ProductsImport::$insertFailed as $error){
+        $this->csvService->importFile($this->argument('path'), $this->argument('test') ?? '');
+
+        foreach ($this->csvService->insertedFail as $error){
             if(is_array($error)){
                 foreach ( $error as $item) {
                     $this->comment($item);
